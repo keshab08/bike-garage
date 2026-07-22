@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ bike.brand }} {{ bike.model }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('bike_list') }}">&larr; Back to list</a></p>
+
+    <h1>{{ bike.brand }} {{ bike.model }}</h1>
+
+    <ul>
+        <li>Category: {{ bike.category.label }}</li>
+        <li>Drive type: {{ bike.driveType.label }}</li>
+        <li>Battery: {{ bike.batteryWh is not null ? bike.batteryWh ~ ' Wh' : '—' }}</li>
+        <li>Frame size: {{ bike.frameSize }}</li>
+        <li>Mileage: {{ bike.mileageKm is not null ? bike.mileageKm ~ ' km' : 'unknown' }}</li>
+        <li>Original price: €{{ (bike.originalPriceCents / 100)|number_format(2, ',', '.') }}</li>
+        <li>Current price: €{{ (bike.currentPriceCents / 100)|number_format(2, ',', '.') }}</li>
+        <li>Discount: -{{ bike.discountPercent }}%</li>
+        <li>Condition: {{ bike.condition.label }}</li>
+    </ul>
+{% endblock %}

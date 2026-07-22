@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add bike{% endblock %}
+
+{% block body %}
+    <p class="crumb"><a href="{{ path('bike_list') }}">Back to list</a></p>
+
+    <section class="detail-card">
+        <h1>Add a bike</h1>
+        <p class="lede">The form writes a normalized record back to the JSON.</p>
+
+        {{ form_start(form, { attr: { class: 'bike-form' } }) }}
+            {{ form_errors(form) }}
+
+            <div class="form-grid">
+                {{ form_row(form.brand) }}
+                {{ form_row(form.model) }}
+                {{ form_row(form.category) }}
+                {{ form_row(form.driveType) }}
+                {{ form_row(form.battery) }}
+                {{ form_row(form.frameSize) }}
+                {{ form_row(form.mileage) }}
+                {{ form_row(form.originalPrice) }}
+                {{ form_row(form.currentPrice) }}
+                {{ form_row(form.condition) }}
+            </div>
+
+            <button class="button button-primary" type="submit">Save bike</button>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bike Garage{% endblock %}
+
+{% block body %}
+    <h1>Bike Garage</h1>
+
+    <p><a href="{{ path('bike_new') }}">+ Add a bike</a></p>
+
+    <form method="get">
+        {% if activeCategory %}
+            <input type="hidden" name="category" value="{{ activeCategory.value }}">
+        {% endif %}
+        {% if sort %}
+            <input type="hidden" name="sort" value="{{ sort }}">
+        {% endif %}
+        <label for="q"><strong>Search:</strong></label>
+        <input id="q" name="q" type="search" value="{{ query ?? '' }}" placeholder="Brand, model, or category">
+        <button type="submit">Search</button>
+        <a href="{{ path('bike_list', {category: activeCategory ? activeCategory.value : null, sort: sort}) }}">Clear</a>
+    </form>
+
+    <nav>
+        <strong>Category:</strong>
+        <a href="{{ path('bike_list', {sort: sort, q: query}) }}">All</a>
+        {% for cat in categories %}
+            <a href="{{ path('bike_list', {category: cat.value, sort: sort, q: query}) }}"
+               {% if cat == activeCategory %}style="font-weight: bold"{% endif %}>
+                {{ cat.label }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    <nav>
+        <strong>Sort by price:</strong>
+        <a href="{{ path('bike_list', {category: activeCategory ? activeCategory.value : null, sort: 'price_asc', q: query}) }}">lowest first</a>
+        <a href="{{ path('bike_list', {category: activeCategory ? activeCategory.value : null, sort: 'price_desc', q: query}) }}">highest first</a>
+    </nav>
+
+    <table id="bikes-table" border="1" cellpadding="6">
+        <tr>
+            <th>Brand</th><th>Model</th><th>Category</th>
+            <th>Original</th><th>Current</th><th>Discount</th>
+        </tr>
+        {% for bike in bikes %}
+            <tr>
+                <td>{{ bike.brand }}</td>
+                <td><a href="{{ path('bike_detail', {id: bike.id}) }}">{{ bike.model }}</a></td>
+                <td>{{ bike.category.label }}</td>
+                <td>{{ '€' ~ (bike.originalPriceCents / 100)|number_format(2, ',', '.') }}</td>
+                <td>{{ '€' ~ (bike.currentPriceCents / 100)|number_format(2, ',', '.') }}</td>
+                <td>-{{ bike.discountPercent }}%</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6">No bikes match the current filters.</td></tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        const input = document.getElementById('q');
+        const table = document.getElementById('bikes-table');
+        let timer;
+
+        input.addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(runSearch, 250);  
+        });
+
+        async function runSearch() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('q', input.value);
+
+            const res = await fetch(url);
+            const html = await res.text();
+
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const fresh = doc.getElementById('bikes-table');
+            if (fresh) {
+                table.innerHTML = fresh.innerHTML;
+            }
+ 
+            history.replaceState(null, '', url);
+        }
+    </script>
+{% endblock %}

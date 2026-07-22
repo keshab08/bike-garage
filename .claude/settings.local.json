@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php vendor/bin/phpunit)",
+      "Bash(echo \"EXIT:$?\")"
+    ]
+  }
+}
