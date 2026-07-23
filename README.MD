@@ -74,4 +74,4 @@ its URL.
 -Edit and delete the bike.
 -Images per bike.
 -user friendly GUI
--interate with Backend rather than a json as a backend
+-Integrate with Backend rather than a json as a backend
